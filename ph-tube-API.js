@@ -25,7 +25,7 @@ const fetchDataByCategories =async (categoryId) =>{
     const fetchCategory = await fetch(`https://openapi.programming-hero.com/api/videos/category/${categoryId}`);
     const data = await fetchCategory.json();
     const idData =data.data;
-    //console.log(idData);
+    console.log(idData);
     cardContainer.innerHTML='';
     idData.forEach(video => {
         const newCard = document.createElement('div');
@@ -34,8 +34,18 @@ const fetchDataByCategories =async (categoryId) =>{
         <figure class="h-[200px]">
         <img src="${video.thumbnail}" alt="video" class="h-full  rounded-t-3xl w-full" /></figure>
         <div class="card-body">
+        <div class="flex gap-3 justify-start items-start">
+          <div>
+          <img src="${video.authors[0].profile_picture}" class="w-8 h-8 rounded-full"> 
+          </div> 
+          <div>
           <h2 class="card-title">${video.title}</h2>
-          <p>If a dog chews shoes whose shoes does he choose?</p>
+          <p class="pb-[8px]">${video.authors[0].profile_name}</p>
+          <p>${video.others.views}</p>
+          </div>
+          </div>
+          <div>
+          </div>
         </div>
       </div>`
         cardContainer.appendChild(newCard);
