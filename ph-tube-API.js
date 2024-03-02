@@ -2,6 +2,7 @@
 const btnContainer = document.getElementById("btn-container");
 const cardContainer = document.getElementById("card-container");
 let selectedCategory = 1000;
+const errorContainer = document.getElementById("error-element");
 
 const callAPI = async () =>{
     const fetchData = await fetch('https://openapi.programming-hero.com/api/videos/categories');
@@ -13,7 +14,7 @@ const callAPI = async () =>{
 const dynamicBtn = (cards) =>{
     cards.forEach(card => {
         const newBtn = document.createElement('button');
-        newBtn.classList= "btn px-[20px] text-lg font-medium";
+        newBtn.classList= "category-btn btn px-[20px] text-lg font-medium";
         newBtn.innerText = card.category;
         newBtn.addEventListener('click', () => fetchDataByCategories(card.category_id));
         btnContainer.appendChild(newBtn);
@@ -26,8 +27,17 @@ const fetchDataByCategories =async (categoryId) =>{
     const data = await fetchCategory.json();
     const idData =data.data;
     console.log(idData);
+    if(idData.length === 0){
+        errorContainer.classList.remove("hidden");
+    } else{
+        errorContainer.classList.add('hidden');
+    }
     cardContainer.innerHTML='';
     idData.forEach(video => {
+        let varifiedBadge = '';
+        if(video.authors[0].verified){
+            varifiedBadge = `<img src="./images/badge.png" class ="ml-0 w-6 h-6">`
+        }
         const newCard = document.createElement('div');
         newCard.innerHTML=`
         <div class="card card-compact">
@@ -40,8 +50,11 @@ const fetchDataByCategories =async (categoryId) =>{
           </div> 
           <div>
           <h2 class="card-title">${video.title}</h2>
-          <p class="pb-[8px]">${video.authors[0].profile_name}</p>
-          <p>${video.others.views}</p>
+          <div class="flex">
+          <p class="pb-[8px] w-auto inline-block">${video.authors[0].profile_name}</p>
+          ${varifiedBadge}
+          </div>
+          <p>${video.others.views}<span> Views</span></p>
           </div>
           </div>
           <div>
@@ -54,3 +67,4 @@ const fetchDataByCategories =async (categoryId) =>{
 
 fetchDataByCategories(selectedCategory)
 callAPI();
+
